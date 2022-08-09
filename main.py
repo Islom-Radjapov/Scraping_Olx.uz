@@ -1,3 +1,4 @@
+from time import sleep
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -30,13 +31,14 @@ def scraping_urls(url):
         info_products = card.find_all('div', class_='css-9nzgu8')
         for info_product in info_products:
             prod_loc_time = info_product.find('p', class_='css-p6wsjo-Text eu5v0x0').text
-            if 'Сегодня' in prod_loc_time and 'Ташкент' in prod_loc_time and 'Юнусабадский район' in prod_loc_time:
+            if 'Сегодня' in prod_loc_time and 'Ташкент' in prod_loc_time:# and 'Юнусабадский район' in prod_loc_time:
                 try:
                     prod_url = "https://www.olx.uz" + card.a["href"]
                     product_urls.append(prod_url)
                     print(prod_url)
                 except:
                         continue
+
 
 def phone_get(url):
     try:
@@ -49,9 +51,12 @@ def phone_get(url):
         element = driver.find_element(By.CLASS_NAME, "css-1ferwkx")
         driver.execute_script("arguments[0].scrollIntoView();", element)
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'css-cuxnr-BaseStyles')))
+        sleep(7)
         try:
             phone_button = driver.find_element(By.CLASS_NAME, 'css-cuxnr-BaseStyles')
             phone_button.click()
+            phone_button.click()
+            sleep(7)
             WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'css-v1ndtc')))
             phone = driver.find_element(By.CLASS_NAME, "css-v1ndtc").text
         except:
@@ -80,21 +85,26 @@ def scrap_info(urls):
             phone = None
             for _ in range(10):
                 try:
+                    sleep(7)
                     phone_button = driver.find_element(By.CLASS_NAME, 'css-cuxnr-BaseStyles')
                     phone_button.click()
+                    sleep(7)
                     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'css-v1ndtc')))
                     phone = driver.find_element(By.CLASS_NAME, "css-v1ndtc").text
                 except Exception as error:
-                    print(error)
+                    #print(error)
                     continue
                 if phone:
                     break
 
             if not phone:
+                sleep(7)
                 phone = phone_get(url)
             if not phone:
+                sleep(7)
                 phone = phone_get(url)
             if not phone:
+                sleep(7)
                 phone = phone_get(url)
 
 
@@ -120,12 +130,12 @@ def scrap_info(urls):
             product_url = url
 
             print(f"""
-name={name.strip()},
-product_name={product_name.strip()},
-price={price},
-phone={phone},
-description={description.strip()}, 
-product={product_url}
+name: {name.strip()},
+product_name: {product_name.strip()},
+price: {price},
+phone: {phone},
+description: {description.strip()}, 
+product: {product_url}
 """)
             # append data to the database
             data_sql(name.strip(), product_name.strip(), price, phone, description.strip(), product_url)
@@ -138,7 +148,7 @@ product={product_url}
 
 # function to append data to the database
 def data_sql(name, product_name, price, phone, description, product_url):
-        connect = sqlite3.connect(f"product={len(product_urls)}.db")
+        connect = sqlite3.connect(f"product_{len(product_urls)}.db")
         cursor = connect.cursor()
         cursor.execute(f"CREATE TABLE IF NOT EXISTS {today}(Name text, product_name text, price integer, phone text, description text, url text) ")
         cursor.execute(f"INSERT INTO {today} VALUES ('{name}', '{product_name}', '{price}', '{phone}', '{description}', '{product_url}')")

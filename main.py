@@ -31,7 +31,7 @@ def scraping_urls(url):
         info_products = card.find_all('div', class_='css-9nzgu8')
         for info_product in info_products:
             prod_loc_time = info_product.find('p', class_='css-p6wsjo-Text eu5v0x0').text
-            if 'Сегодня' in prod_loc_time and 'Ташкент' in prod_loc_time:# and 'Юнусабадский район' in prod_loc_time:
+            if 'Сегодня' in prod_loc_time and 'Ташкент' in prod_loc_time and 'Юнусабадский район' in prod_loc_time:
                 try:
                     prod_url = "https://www.olx.uz" + card.a["href"]
                     product_urls.append(prod_url)

@@ -169,5 +169,3 @@ if __name__ == "__main__":
     # all get info
     scrap_info(product_urls)
 
-
-    """started funct def"""

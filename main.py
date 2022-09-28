@@ -92,7 +92,7 @@ def scrap_info(urls):
                     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'css-v1ndtc')))
                     phone = driver.find_element(By.CLASS_NAME, "css-v1ndtc").text
                 except Exception as error:
-                    #print(error)
+                    # print(error)
                     continue
                 if phone:
                     break
